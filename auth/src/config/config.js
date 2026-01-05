@@ -4,6 +4,8 @@ dotenvConfig();
 
 const _config = {
 
+    MONGO_URL: process.env.MONGO_URL
+
 }
 
 export default _config;
