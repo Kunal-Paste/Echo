@@ -46,3 +46,13 @@ export async function registerUser(req,res){
 
 }
 
+export async function googleAuthCallback(req,res){
+
+    const user = req.user;
+
+    console.log(user);
+
+    res.send('google auth callback')
+
+}
+
