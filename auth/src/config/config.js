@@ -4,7 +4,8 @@ dotenvConfig();
 
 const _config = {
 
-    MONGO_URL: process.env.MONGO_URL
+    MONGO_URL: process.env.MONGO_URL,
+    JWT_SECRET_KEY: process.env.JWT_SECRET_KEY
 
 }
 
