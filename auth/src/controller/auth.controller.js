@@ -52,6 +52,58 @@ export async function googleAuthCallback(req,res){
 
     console.log(user);
 
+    const userExist = await userModel.findOne({
+        $or:[
+            {email:user.emails[0].value},
+            {googleId:user.id}
+        ]
+    })
+
+    if(userExist){
+        const token = jwt.sign({
+            id:userExist._id,
+            role:userExist.role
+        }, config.JWT_SECRET_KEY, {expiresIn:"2d"});
+
+        res.cookie("token",token);
+
+        return res.status(200).json({
+            message:'user logined successfully',
+            user:{
+                id:userExist._id,
+                email:userExist.email,
+                fullName:userExist.fullName,
+                role:userExist.role
+            }
+        })
+    }
+
+    const newUser = await userModel.create({
+        googleId:user.id,
+        email:user.emails[0].value,
+        fullName:{
+            firstName:user.name.givenName,
+            lastName:user.name.familyName
+        }
+    })
+
+    const token = jwt.sign({
+        id:newUser._id,
+        role:newUser.role
+    }, config.JWT_SECRET_KEY, {expiresIn:"2d"});
+
+    res.cookie("token",token)
+
+    res.status(201).json({
+        message:'user logined successfully',
+        user:{
+            id:newUser._id,
+            email:newUser.email,
+            fullName:newUser.fullName,
+            role:newUser.role
+        }
+    })
+
     res.send('google auth callback')
 
 }
