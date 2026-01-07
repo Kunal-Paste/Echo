@@ -2,6 +2,7 @@ import userModel from "../model/user.model.js";
 import config from "../config/config.js";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import {publishToQueue} from '../broker/rabbit.js'
 
 
 export async function registerUser(req,res){
@@ -31,6 +32,13 @@ export async function registerUser(req,res){
         id:user._id,
         role:user.role,
     }, config.JWT_SECRET_KEY, {expiresIn:'2d'});
+
+    await publishToQueue("user_created", {
+        id:user._id,
+        email:user.email,
+        fullName:user.fullName,
+        role:user.role
+    })
 
     res.cookie('token',token);
 
@@ -92,9 +100,16 @@ export async function googleAuthCallback(req,res){
         role:newUser.role
     }, config.JWT_SECRET_KEY, {expiresIn:"2d"});
 
+    await publishToQueue('user_created', {
+        id:newUser._id,
+        email:newUser.email,
+        fullName:newUser.fullName,
+        role:newUser.role
+    })
+
     res.cookie("token",token)
 
-    res.status(201).json({
+    return res.status(201).json({
         message:'user logined successfully',
         user:{
             id:newUser._id,
