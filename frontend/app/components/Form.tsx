@@ -1,14 +1,18 @@
 "use client";
 
+import React, { useState } from "react";
+import "../style/register.css";
+import { User, Mic} from "lucide-react";
+import { FcGoogle } from "react-icons/fc";
+import '../globals.css';
 
-import React, { useState } from 'react'
-import '../style/register.css';
 
 const Form = () => {
-
   const [role, setRole] = useState("user");
-  
-   const handleSubmit = (e) => {
+  const [form, setForm] = useState({ email: '', firstname: '', lastname: '', password: '' });
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     const formData = new FormData(e.target);
@@ -24,29 +28,31 @@ const Form = () => {
     console.log(payload); // send to API later
   };
 
-
-
-   return (
+  return (
     <div className="register-container">
       <div className="register-card">
-        <h1 className="title">Create Account</h1>
-        <p className="subtitle">Join us and start your journey</p>
+        <h1 className="title customretro">Create Account</h1>
+        <p className="subtitle font-bold">Join us and start your journey</p>
 
-           <div className="role-selector">
+        <div className="role-selector">
           <button
             type="button"
-            className={`role-btn ${role === "user" ? "active" : ""}`}
+            className={`role-btn ${role === "user" ? "active" : ""} flex gap-4`}
             onClick={() => setRole("user")}
           >
-            User
+            <span className="ml-9 text-[1em] font-black">User</span>
+            <User size={20} />
           </button>
 
           <button
             type="button"
-            className={`role-btn ${role === "artist" ? "active" : ""}`}
+            className={`role-btn ${
+              role === "artist" ? "active" : ""
+            } flex gap-4`}
             onClick={() => setRole("artist")}
           >
-            Artist
+            <span className="ml-9 text-[1em] font-black">Artist</span>
+            <Mic size={20} />
           </button>
         </div>
 
@@ -59,7 +65,7 @@ const Form = () => {
           <input type="email" placeholder="Email" required />
           <input type="password" placeholder="Password" required />
 
-          <button className="primary-btn" type="submit">
+          <button className="primary-btn customnormal text-3xl tracking-[.5rem]" type="submit">
             Register
           </button>
         </form>
@@ -68,12 +74,13 @@ const Form = () => {
           <span>OR</span>
         </div>
 
-        <button className="google-btn">
-          Sign in with Google
+        <button className="google-btn flex gap-4">
+          <span className="ml-16 text-[1em] font-black customnormal  tracking-[.2rem]">Sigin with Google</span>
+           <FcGoogle size={25} />
         </button>
       </div>
     </div>
   );
-}
+};
 
-export default Form
+export default Form;
