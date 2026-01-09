@@ -1,3 +1,6 @@
+"use client";
+
+import Link from "next/link";
 
 
 export default function Home() {
@@ -6,7 +9,9 @@ export default function Home() {
       <h1>Echo Zone 🎧</h1>
       <p>Welcome to my Next.js app</p>
 
-      <button className="bg-white text-black p-1.5 rounded-md font-bold">Register</button>
+      <Link href='/register'>
+        <button className="bg-white text-black p-1.5 rounded-md font-bold">Register</button>
+      </Link>
     </main>
   );
 }
