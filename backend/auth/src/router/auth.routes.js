@@ -7,6 +7,8 @@ const router = express.Router();
 
 router.post('/register', authValidator.registerValidator, authController.registerUser);
 
+router.post('/login', authValidator.loginValidator, authController.loginUser);
+
 router.get('/google',
   passport.authenticate('google', { scope: ['profile', 'email'] })
 );

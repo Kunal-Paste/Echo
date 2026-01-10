@@ -17,3 +17,9 @@ export const registerValidator = [
     body('fullName.lastName').notEmpty().withMessage('last name is require'),
     validateError
 ]
+
+export const loginValidator = [
+    body('email').isEmail().withMessage('invalid email format'),
+    body('password').notEmpty().withMessage('password is required'),
+    validateError
+]

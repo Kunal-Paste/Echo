@@ -54,6 +54,45 @@ export async function registerUser(req,res){
 
 }
 
+export async function loginUser(req,res){
+
+    const {email, password} = req.body;
+
+    const user = await userModel.findOne({email})
+
+    if(!user){
+        return res.status(400).json({
+            message:'user not found, invalid email'
+        })
+    }
+
+    const isPassword = await bcrypt.compare(password, user.password);
+
+    if(!isPassword){
+        return res.status(400).json({
+            message:'user not found, invalid password'
+        })
+    }
+
+    const token = jwt.sign({
+        id:user._id,
+        role:user.role
+    }, config.JWT_SECRET_KEY, {expiresIn: "2d"})
+
+    res.cookie("token",token);
+
+    return res.status(200).json({
+        message:'user logined in successfully',
+        user:{
+            id:user._id,
+            email:user.email,
+            fullName:user.fullName,
+            role:user.role
+        }
+    })
+
+}
+
 export async function googleAuthCallback(req,res){
 
     const user = req.user;
@@ -75,15 +114,7 @@ export async function googleAuthCallback(req,res){
 
         res.cookie("token",token);
 
-        return res.status(200).json({
-            message:'user logined successfully',
-            user:{
-                id:userExist._id,
-                email:userExist.email,
-                fullName:userExist.fullName,
-                role:userExist.role
-            }
-        })
+        return res.redirect('http://localhost:3000');
     }
 
     const newUser = await userModel.create({
@@ -109,15 +140,7 @@ export async function googleAuthCallback(req,res){
 
     res.cookie("token",token)
 
-    return res.status(201).json({
-        message:'user logined successfully',
-        user:{
-            id:newUser._id,
-            email:newUser.email,
-            fullName:newUser.fullName,
-            role:newUser.role
-        }
-    })
+    res.redirect('http://localhost:3000');
 
     res.send('google auth callback')
 

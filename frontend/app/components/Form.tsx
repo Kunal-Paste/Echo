@@ -53,9 +53,8 @@ const Form = () => {
           withCredentials: true,
         }
       );
-      
-      alert('data registered');
 
+      alert("data registered");
     } catch (err) {
       console.log("error during registering in frontend", err);
     }
@@ -138,7 +137,13 @@ const Form = () => {
           <span>OR</span>
         </div>
 
-        <button className="google-btn flex gap-4">
+        <button
+          className="google-btn flex gap-4"
+          onClick={() => {
+            window.location.href =
+              "http://localhost:5000/api/auth/google";
+          }}
+        >
           <span className="ml-16 text-[1em] font-black customnormal  tracking-[.2rem]">
             Sigin with Google
           </span>
