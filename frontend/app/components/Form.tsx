@@ -2,17 +2,27 @@
 
 import React, { useState } from "react";
 import "../style/register.css";
-import { User, Mic} from "lucide-react";
+import { User, Mic } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
-import '../globals.css';
-
+import "../globals.css";
+import axios from "axios";
 
 const Form = () => {
   const [role, setRole] = useState("user");
-  const [form, setForm] = useState({ email: '', firstname: '', lastname: '', password: '' });
+  const [form, setForm] = useState({
+    email: "",
+    firstName: "",
+    lastName: "",
+    password: "",
+  });
   const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e) => {
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setForm((f) => ({ ...f, [name]: value }));
+  }
+
+  async function handleSubmit(e) {
     e.preventDefault();
 
     const formData = new FormData(e.target);
@@ -25,8 +35,31 @@ const Form = () => {
       role, // 🔥 auto sent
     };
 
-    console.log(payload); // send to API later
-  };
+    console.log(payload);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/register",
+        {
+          email: form.email,
+          fullName: {
+            firstName: form.firstName,
+            lastName: form.lastName,
+          },
+          password: form.password,
+          role: role,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      
+      alert('data registered');
+
+    } catch (err) {
+      console.log("error during registering in frontend", err);
+    }
+  }
 
   return (
     <div className="register-container">
@@ -56,16 +89,47 @@ const Form = () => {
           </button>
         </div>
 
-        <form className="form">
+        <form className="form" onSubmit={handleSubmit}>
           <div className="name-row">
-            <input type="text" placeholder="First Name" required />
-            <input type="text" placeholder="Last Name" required />
+            <input
+              type="text"
+              name="firstName"
+              placeholder="First Name"
+              required
+              value={form.firstName}
+              onChange={handleChange}
+            />
+            <input
+              type="text"
+              name="lastName"
+              placeholder="Last Name"
+              required
+              value={form.lastName}
+              onChange={handleChange}
+            />
           </div>
 
-          <input type="email" placeholder="Email" required />
-          <input type="password" placeholder="Password" required />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            required
+            value={form.email}
+            onChange={handleChange}
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            required
+            value={form.password}
+            onChange={handleChange}
+          />
 
-          <button className="primary-btn customnormal text-3xl tracking-[.5rem]" type="submit">
+          <button
+            className="primary-btn customnormal text-3xl tracking-[.5rem]"
+            type="submit"
+          >
             Register
           </button>
         </form>
@@ -75,8 +139,10 @@ const Form = () => {
         </div>
 
         <button className="google-btn flex gap-4">
-          <span className="ml-16 text-[1em] font-black customnormal  tracking-[.2rem]">Sigin with Google</span>
-           <FcGoogle size={25} />
+          <span className="ml-16 text-[1em] font-black customnormal  tracking-[.2rem]">
+            Sigin with Google
+          </span>
+          <FcGoogle size={25} />
         </button>
       </div>
     </div>
