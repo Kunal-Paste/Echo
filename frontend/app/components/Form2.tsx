@@ -6,17 +6,15 @@ import { User, Mic } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import "../globals.css";
 import axios from "axios";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-const Form = () => {
-  const [role, setRole] = useState("user");
+const Form2 = () => {
   const [form, setForm] = useState({
     email: "",
-    firstName: "",
-    lastName: "",
     password: "",
   });
   const [submitting, setSubmitting] = useState(false);
+  const router = useRouter();
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -29,33 +27,26 @@ const Form = () => {
     const formData = new FormData(e.target);
 
     const payload = {
-      firstName: formData.get("firstName"),
-      lastName: formData.get("lastName"),
       email: formData.get("email"),
       password: formData.get("password"),
-      role, // 🔥 auto sent
     };
 
     console.log(payload);
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
+        "http://localhost:5000/api/auth/login",
         {
           email: form.email,
-          fullName: {
-            firstName: form.firstName,
-            lastName: form.lastName,
-          },
           password: form.password,
-          role: role,
         },
         {
           withCredentials: true,
         }
       );
 
-      alert("data registered");
+      alert("data logined");
+      router.push('/');
     } catch (err) {
       console.log("error during registering in frontend", err);
     }
@@ -64,56 +55,11 @@ const Form = () => {
   return (
     <div className="register-container">
       <div className="register-card">
-        <div className="flex gap-3">
-          <h1 className="title customretro">Create Account</h1>
-          <Link className="mt-[.4rem] hover:text-blue-500" href="/login">
-            <span className="text-[.9rem] customnormal">Already have account ? login</span>
-          </Link>
-        </div>
+        <h1 className="title customretro">Login Account</h1>
         <p className="subtitle font-bold customnormal">Join us and start your journey</p>
 
-        <div className="role-selector">
-          <button
-            type="button"
-            className={`role-btn ${role === "user" ? "active" : ""} flex gap-4`}
-            onClick={() => setRole("user")}
-          >
-            <span className="ml-9 text-[1em] font-black">User</span>
-            <User size={20} />
-          </button>
-
-          <button
-            type="button"
-            className={`role-btn ${
-              role === "artist" ? "active" : ""
-            } flex gap-4`}
-            onClick={() => setRole("artist")}
-          >
-            <span className="ml-9 text-[1em] font-black">Artist</span>
-            <Mic size={20} />
-          </button>
-        </div>
-
         <form className="form" onSubmit={handleSubmit}>
-          <div className="name-row">
-            <input
-              type="text"
-              name="firstName"
-              placeholder="First Name"
-              required
-              value={form.firstName}
-              onChange={handleChange}
-            />
-            <input
-              type="text"
-              name="lastName"
-              placeholder="Last Name"
-              required
-              value={form.lastName}
-              onChange={handleChange}
-            />
-          </div>
-
+          
           <input
             type="email"
             name="email"
@@ -135,7 +81,7 @@ const Form = () => {
             className="primary-btn customnormal text-3xl tracking-[.5rem]"
             type="submit"
           >
-            Register
+            Login :)
           </button>
         </form>
 
@@ -146,7 +92,8 @@ const Form = () => {
         <button
           className="google-btn flex gap-4"
           onClick={() => {
-            window.location.href = "http://localhost:5000/api/auth/google";
+            window.location.href =
+              "http://localhost:5000/api/auth/google";
           }}
         >
           <span className="ml-16 text-[1em] font-black customnormal  tracking-[.2rem]">
@@ -159,4 +106,4 @@ const Form = () => {
   );
 };
 
-export default Form;
+export default Form2;
