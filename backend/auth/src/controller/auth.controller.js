@@ -31,6 +31,7 @@ export async function registerUser(req,res){
     const token = jwt.sign({
         id:user._id,
         role:user.role,
+        fullName:user.fullName,
     }, config.JWT_SECRET_KEY, {expiresIn:'2d'});
 
     await publishToQueue("user_created", {
@@ -76,8 +77,9 @@ export async function loginUser(req,res){
 
     const token = jwt.sign({
         id:user._id,
-        role:user.role
-    }, config.JWT_SECRET_KEY, {expiresIn: "2d"})
+        role:user.role,
+        fullName:user.fullName,
+    }, config.JWT_SECRET_KEY, {expiresIn: "2d"});
 
     res.cookie("token",token);
 
@@ -109,7 +111,8 @@ export async function googleAuthCallback(req,res){
     if(userExist){
         const token = jwt.sign({
             id:userExist._id,
-            role:userExist.role
+            role:userExist.role,
+            fullName:userExist.fullName,
         }, config.JWT_SECRET_KEY, {expiresIn:"2d"});
 
         res.cookie("token",token);
