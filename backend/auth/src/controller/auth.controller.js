@@ -7,7 +7,7 @@ import {publishToQueue} from '../broker/rabbit.js'
 
 export async function registerUser(req,res){
 
-    const {email,password,fullName:{firstName,lastName}} = req.body;
+    const {email,password,fullName:{firstName,lastName}, role = 'user'} = req.body;
 
     const alredyExist = await userModel.findOne({email});
 
@@ -25,7 +25,8 @@ export async function registerUser(req,res){
         fullName:{
             firstName,
             lastName
-        }
+        },
+        role
     });
 
     const token = jwt.sign({

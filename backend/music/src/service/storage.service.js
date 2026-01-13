@@ -1,6 +1,6 @@
 import ImageKit from "imagekit";
 import {v4 as uuid} from 'uuid';
-import config from "../config/config";
+import config from "../config/config.js";
 
 export const imagekit = new ImageKit({
     publicKey:config.IMAGEKIT_PUBLICKEY,
@@ -9,7 +9,7 @@ export const imagekit = new ImageKit({
 });
 
 
-export async function uploadMusic({buffer,folder='/echo-music'}){
+export async function uploadMusic({buffer,folder='/echo'}){
     
     const res = await imagekit.upload({
         file:buffer,
