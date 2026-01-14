@@ -17,7 +17,16 @@ router.post('/upload', authMiddleware.authArtistMiddleware, upload.fields([
 
 router.get('/artist-music', authMiddleware.authArtistMiddleware, musicController.getArtistMusic);
 
-router.post('/playlist', authMiddleware.authArtistMiddleware, musicController.createPlaylist)
+router.post('/playlist', authMiddleware.authArtistMiddleware, musicController.createPlaylist);
+
+router.get('/playlist', authMiddleware.authUserMiddleware, musicController.getPlaylist);
+
+router.get('/playlist/:id', authMiddleware.authUserMiddleware, musicController.getPlaylistById);
+
+router.get('/',authMiddleware.authUserMiddleware, musicController.getAllMusic);
+
+router.get('/:id', authMiddleware.authUserMiddleware, musicController.getMusicById)
+
 
 
 export default router;

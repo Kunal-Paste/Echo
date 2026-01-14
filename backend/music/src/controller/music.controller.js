@@ -69,6 +69,58 @@ export async function getArtistMusic(req,res){
     }
 }
 
+export async function getAllMusic(req,res){
+    
+    const {skip = 0, limit = 10} = req.query;
+
+    try {
+
+        const musicDoc = await musicModel.find().skip(skip).limit(limit).lean();
+        const musics = [];
+
+        for(let music of musicDoc){
+            musics.push(music)
+        }
+
+        return res.status(200).json({
+            message:'all of the musics',
+            musics
+        })
+
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({
+            message:'internal server error , while getting all your music'
+        })
+    }
+
+}
+
+export async function getMusicById(req,res){
+    const {id} = req.params;
+
+    try {
+        const music = await musicModel.findById(id).lean();
+
+        if(!music){
+            return res.status(404).json({
+                message:'music not found'
+            })
+        }
+
+        return res.status(200).json({
+            message:'got music by id',
+            music
+        })
+
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({
+            message:'internal server error, in getMusicById'
+        })
+    }
+}
+
 export async function createPlaylist(req,res){
 
     const {title, musics} = req.body;
@@ -92,6 +144,62 @@ export async function createPlaylist(req,res){
         console.log(err);
         return res.status(500).json({
             message:'internal server error, while creating playlist'
+        })
+    }
+
+}
+
+export async function getPlaylist(req,res){
+    try {
+        const playlists = await playlistModel.find({artistId: req.user.id});
+        return res.status(200).json({
+            message:'playlist got successfully',
+            playlists
+        })
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({
+            message:'internal server error, while getting playlist'
+        })
+    }
+}
+
+export async function getPlaylistById(req,res){
+    
+    const {id} = req.params;
+
+    try {
+        const playlistDocs = await playlistModel.findById(id).lean();
+
+        if(!playlistDocs){
+            return res.status(404).json({
+                message:'playlist not found'
+            })
+        }
+
+        const musics = [];
+
+        for(let musicId of playlistDocs.musics){
+
+            const music = await musicModel.findById(musicId).lean();
+
+            if(music){
+               musics.push(music);
+            }
+
+            playlistDocs.musics = musics;
+
+        }
+
+        return res.status(200).json({
+            message:'fetched playlist by id successfully',
+            musics
+        })
+
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({
+            message:'internal server error , in getPlaylistById'
         })
     }
 

@@ -30,3 +30,26 @@ export async function authArtistMiddleware(req,res,next){
         })
      }
 }
+
+export async function authUserMiddleware(req,res,next){
+ 
+    const token = req.cookies.token;
+
+    if(!token){
+        return res.status(401).json({
+            message:'unauthorized'
+        })
+    }
+
+    try {
+        const decoded = jwt.verify(token, config.JWT_SECRET_KEY);
+        req.user = decoded;
+        next();
+    } catch (err) {
+        console.log(err);
+        return res.status(401).json({
+            message:'unauthorized user'
+        })
+    }
+
+}
