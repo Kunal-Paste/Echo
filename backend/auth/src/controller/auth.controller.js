@@ -99,6 +99,7 @@ export async function loginUser(req,res){
 export async function googleAuthCallback(req,res){
 
     const user = req.user;
+    const roleFromClient = req.cookies.authRole || "user"
 
     console.log(user);
 
@@ -109,17 +110,46 @@ export async function googleAuthCallback(req,res){
         ]
     })
 
-    if(userExist){
-        const token = jwt.sign({
-            id:userExist._id,
-            role:userExist.role,
-            fullName:userExist.fullName,
-        }, config.JWT_SECRET_KEY, {expiresIn:"2d"});
+    // if(userExist){
+    //     const token = jwt.sign({
+    //         id:userExist._id,
+    //         role:userExist.role,
+    //         fullName:userExist.fullName,
+    //     }, config.JWT_SECRET_KEY, {expiresIn:"2d"});
 
-        res.cookie("token",token);
+    //     res.cookie("token",token);
 
-        return res.redirect('http://localhost:3000');
+    //     if(userExist.role === 'artist'){
+    //         return res.redirect('http://localhost:3000/artist/dashboard');
+    //     }
+
+    //     return res.redirect('http://localhost:3000');
+    // }
+
+    if (userExist) {
+      if (roleFromClient && userExist.role !== roleFromClient) {
+    userExist.role = roleFromClient;
+    await userExist.save();
     }
+
+   const token = jwt.sign({
+     id: userExist._id,
+    role: userExist.role,
+    fullName: userExist.fullName,
+  }, config.JWT_SECRET_KEY, { expiresIn: "2d" });
+
+  res.cookie("token", token);
+
+  res.clearCookie("authRole");
+
+  if (userExist.role === "artist") {
+    return res.redirect("http://localhost:3000/artist/dashboard");
+  }
+
+  return res.redirect("http://localhost:3000");
+ }
+
+
 
     const newUser = await userModel.create({
         googleId:user.id,
@@ -127,7 +157,8 @@ export async function googleAuthCallback(req,res){
         fullName:{
             firstName:user.name.givenName,
             lastName:user.name.familyName
-        }
+        },
+        role: roleFromClient,
     })
 
     const token = jwt.sign({
@@ -142,9 +173,17 @@ export async function googleAuthCallback(req,res){
         role:newUser.role
     })
 
-    res.cookie("token",token)
+    res.cookie("token",token);
 
-    res.redirect('http://localhost:3000');
+    if (newUser.role === "artist") {
+    return res.redirect("http://localhost:3000/artist/dashboard");
+    }
+
+    res.redirect("http://localhost:3000");
+
+    res.clearCookie("authRole");
+
+    // res.redirect('http://localhost:3000');
 
     res.send('google auth callback')
 

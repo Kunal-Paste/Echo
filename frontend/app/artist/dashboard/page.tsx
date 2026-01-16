@@ -1,6 +1,11 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
+import UploadForm from "@/app/components/UploadForm";
 
 const page = () => {
+  const [openUpload, setOpenUpload] = useState(false);
+
   return (
     <div className=" w-full bg-gradient-to-t from-[#000000] to-[#434343] flex flex-col gap-[2rem]">
       {/* NavBar */}
@@ -36,12 +41,28 @@ const page = () => {
           </p>
 
           <div className="buttons flex gap-[1rem] ml-[.5rem]">
-            <button className="mr-[1rem] rounded-[1rem] p-[.6rem]  customnormal font-bold hover:bg-white hover:text-black border-2 border-amber-50">
-              Upload Music
+            <button
+              className="mr-[1rem] rounded-[1rem] p-[.6rem]  customnormal font-bold hover:bg-white hover:text-black border-2 border-amber-50"
+              onClick={() => setOpenUpload(!openUpload)}
+            >
+              {openUpload ? "Close Upload" : "Upload Music"}
             </button>
             <button className="bg-black mr-[1rem] rounded-[1rem] p-[.6rem]  customnormal font-bold hover:bg-white hover:text-black">
               Learn more
             </button>
+          </div>
+        </div>
+
+
+
+        {/* Upload Music Accordion */}
+        <div
+          className={`overflow-hidden transition-all duration-300 ease-in-out
+    ${openUpload ? "max-h-[700px] mt-6 opacity-100" : "max-h-0 opacity-0"}
+  `}
+        >
+          <div className="bg-black rounded-2xl p-6 shadow-lg">
+            <UploadForm />
           </div>
         </div>
 
@@ -109,7 +130,6 @@ const page = () => {
             Currently Playing
           </h2>
 
-          
           {/* Song Info */}
           <div className="flex flex-col items-center gap-3">
             {/* Cover */}

@@ -55,6 +55,12 @@ const Form = () => {
         }
       );
 
+      if (response.data.user.role === "artist") {
+        window.location.href = "/artist/dashboard";
+      } else {
+        window.location.href = "/";
+      }
+
       alert("data registered");
     } catch (err) {
       console.log("error during registering in frontend", err);
@@ -67,10 +73,14 @@ const Form = () => {
         <div className="flex gap-3">
           <h1 className="title customretro">Create Account</h1>
           <Link className="mt-[.4rem] hover:text-blue-500" href="/login">
-            <span className="text-[.9rem] customnormal">Already have account ? login</span>
+            <span className="text-[.9rem] customnormal">
+              Already have account ? login
+            </span>
           </Link>
         </div>
-        <p className="subtitle font-bold customnormal">Join us and start your journey</p>
+        <p className="subtitle font-bold customnormal">
+          Join us and start your journey
+        </p>
 
         <div className="role-selector">
           <button
@@ -146,6 +156,7 @@ const Form = () => {
         <button
           className="google-btn flex gap-4"
           onClick={() => {
+            document.cookie = `authRole=${role}; path=/;`;
             window.location.href = "http://localhost:5000/api/auth/google";
           }}
         >
