@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState } from "react"; //import ares
 import "../style/register.css";
 import { User, Mic } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
@@ -163,7 +163,7 @@ const Form = () => {
           <span className="ml-16 text-[1em] font-black customnormal  tracking-[.2rem]">
             Sigin with Google
           </span>
-          <FcGoogle size={25} />
+          <FcGoogle size={25} /> 
         </button>
       </div>
     </div>
